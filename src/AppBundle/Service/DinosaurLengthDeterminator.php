@@ -1,14 +1,17 @@
 <?php
 
-// this is not the entire class! Just some code to steal :)
-class DinosaurFactory
+namespace AppBundle\Service;
+
+use AppBundle\Entity\Dinosaur;
+
+class DinosaurLengthDeterminator
 {
-    private function getLengthFromSpecification(string $specification): int
+    public function getLengthFromSpecification(string $specification): int
     {
         $availableLengths = [
             'huge' => ['min' => Dinosaur::HUGE, 'max' => 100],
             'omg' => ['min' => Dinosaur::HUGE, 'max' => 100],
-            '😱' => ['min' => Dinosaur::HUGE, 'max' => 100],
+            'icon' => ['min' => Dinosaur::HUGE, 'max' => 100],
             'large' => ['min' => Dinosaur::LARGE, 'max' => Dinosaur::HUGE - 1],
         ];
         $minLength = 1;

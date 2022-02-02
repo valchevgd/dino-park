@@ -4,6 +4,7 @@ namespace Tests\AppBundle\Factory;
 
 use AppBundle\Entity\Dinosaur;
 use AppBundle\Factory\DinosaurFactory;
+use AppBundle\Service\DinosaurLengthDeterminator;
 use PHPUnit\Framework\TestCase;
 
 class DinosaurFactoryTest extends TestCase
@@ -15,7 +16,9 @@ class DinosaurFactoryTest extends TestCase
 
     public function setUp()
     {
-        $this->factory = new DinosaurFactory();
+        $this->factory = new DinosaurFactory(
+            $this->createMock(DinosaurLengthDeterminator::class)
+        );
     }
 
     public function testItGrowAVelociraptor()
@@ -46,16 +49,9 @@ class DinosaurFactoryTest extends TestCase
     /**
      * @dataProvider getSpecificationTest
      */
-    public function testItGrowDinosaurFromASpecification(string $spec, bool $expectedIsLarge, bool $expectedIdCarnivorous)
+    public function testItGrowDinosaurFromASpecification(string $spec,  bool $expectedIdCarnivorous)
     {
         $dino = $this->factory->growFromSpecification($spec);
-
-        if ($expectedIsLarge) {
-            $this->assertGreaterThanOrEqual(Dinosaur::LARGE, $dino->getLength());
-        } else {
-            $this->assertLessThan(Dinosaur::LARGE, $dino->getLength());
-        }
-
 
         $this->assertSame($expectedIdCarnivorous, $dino->isCarnivorous());
     }
@@ -64,29 +60,9 @@ class DinosaurFactoryTest extends TestCase
     {
         return [
             //specification, is large, is carnivorous
-            ['large carnivorous dinosaur', true, true],
-            ['give me all the cookie', false, false],
-            ['large herbivore', true, false],
-        ];
-    }
-
-    /**
-     * @dataProvider getHugeDinosaurSpecTest
-     */
-    public function testItGrowsAHugeDinosaur(string $spec)
-    {
-        $dino = $this->factory->growFromSpecification($spec);
-        $this->assertGreaterThanOrEqual(Dinosaur::HUGE, $dino->getLength());
-    }
-
-    public function getHugeDinosaurSpecTest(): array
-    {
-        return [
-            ['huge dinosaur'],
-            ['huge dino'],
-            ['huge'],
-            ['OMG'],
-            ['icon'],
+            ['large carnivorous dinosaur', true],
+            ['give me all the cookie', false],
+            ['large herbivore', false],
         ];
     }
 }
