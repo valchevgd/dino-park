@@ -59,7 +59,7 @@ class DinosaurFactoryTest extends TestCase
     public function getSpecificationTest(): array
     {
         return [
-            //specification, is large, is carnivorous
+            //specification, is carnivorous
             ['large carnivorous dinosaur', true],
             ['give me all the cookie', false],
             ['large herbivore', false],
