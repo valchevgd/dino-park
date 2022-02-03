@@ -6,6 +6,7 @@ use AppBundle\Entity\Dinosaur;
 use AppBundle\Factory\DinosaurFactory;
 use AppBundle\Service\DinosaurLengthDeterminator;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 
 class DinosaurFactoryTest extends TestCase
 {
@@ -14,10 +15,16 @@ class DinosaurFactoryTest extends TestCase
      */
     private $factory;
 
+    /**
+     * @var PHPUnit_Framework_MockObject_MockObject
+     */
+    private $lengthDeterminator;
+
     public function setUp()
     {
+        $this->lengthDeterminator = $this->createMock(DinosaurLengthDeterminator::class);
         $this->factory = new DinosaurFactory(
-            $this->createMock(DinosaurLengthDeterminator::class)
+            $this->lengthDeterminator
         );
     }
 
@@ -51,9 +58,15 @@ class DinosaurFactoryTest extends TestCase
      */
     public function testItGrowDinosaurFromASpecification(string $spec,  bool $expectedIdCarnivorous)
     {
+        $this->lengthDeterminator->expects($this->once())
+            ->method('getLengthFromSpecification')
+            ->with($spec)
+            ->willReturn(20);
+
         $dino = $this->factory->growFromSpecification($spec);
 
         $this->assertSame($expectedIdCarnivorous, $dino->isCarnivorous());
+        $this->assertSame(20, $dino->getLength());
     }
 
     public function getSpecificationTest(): array
