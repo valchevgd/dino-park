@@ -39,6 +39,9 @@ class EnclosureBuilderService
 
         $this->addDinosaurs($numberOfDinosaurs, $enclosure);
 
+        $this->entityManager->persist($enclosure);
+        $this->entityManager->flush();
+
         return $enclosure;
     }
 
@@ -61,10 +64,12 @@ class EnclosureBuilderService
         // so use the same diet for every dinosaur.
         $diet = $diets[array_rand($diets)];
 
-        $length = $lengths[array_rand($lengths)];
-        $specification = "{$length} {$diet} dinosaur";
-        $dinosaur = $this->dinosaurFactory->growFromSpecification($specification);
+        for ($i = 0; $i < $numberOfDinosaurs; $i++) {
+            $length = $lengths[array_rand($lengths)];
+            $specification = "{$length} {$diet} dinosaur";
+            $dinosaur = $this->dinosaurFactory->growFromSpecification($specification);
 
-        $enclosure->addDinosaur($dinosaur);
+            $enclosure->addDinosaur($dinosaur);
+        }
     }
 }
