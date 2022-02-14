@@ -26,5 +26,7 @@ jobs:
                   paths:
                       - ./vendor
                   key: v1-dependencies-{{ checksum "composer.json" }}
+            # create sqlite db folder
+            - run: mkdir var/data
             # run tests!
             - run: ./vendor/bin/phpunit
